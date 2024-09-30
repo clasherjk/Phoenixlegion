@@ -1,14 +1,85 @@
 <!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>Your Website Title</title>
-</head>
-<body>
-    <h1>Welcome to My Website</h1>
-    <p>This is a simple website created with HTML, CSS, and JavaScript.</p>
-    <script src="script.js"></script>
+<html lang="en"> 
+ <head> 
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <title>Fetch CoC Clan Info</title> 
+  <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
 
-</body></html>
+        h1 {
+            color: #333;
+        }
+
+        input, button {
+            margin: 10px 0;
+            padding: 10px;
+            width: 300px;
+            display: block;
+        }
+
+        #clanInfo {
+            margin-top: 20px;
+            font-size: 16px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            width: 100%;
+            white-space: pre-wrap;
+            background-color: #f4f4f4;
+        }
+    </style> 
+ </head> 
+ <body> 
+  <h1>Fetch Clan (Coded by Jk)</h1> <label for="clanTag">Enter Clan Tag:</label> 
+  <input type="text" id="clanTag" placeholder="Enter clan tag, e.g., ABC123"> <button onclick="fetchClanInfo()">Fetch Clan Info</button> 
+  <h2>Clan Information:</h2> 
+  <div id="clanInfo"></div> 
+  <script>
+        function fetchClanInfo() {
+            const clanTag = document.getElementById('clanTag').value;
+            const apiKey = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjEzYjAyYmFkLTI1YzctNDk2MC1hYTc4LWVhOGJmYWU0YjliZSIsImlhdCI6MTcyNzcxMTI4Miwic3ViIjoiZGV2ZWxvcGVyL2NjZjA4YWViLWJlYTYtZTRmYy05ZmZjLTllMTk3ZWY3ZWM1NCIsInNjb3BlcyI6WyJjbGFzaCJdLCJsaW1pdHMiOlt7InRpZXIiOiJkZXZlbG9wZXIvc2lsdmVyIiwidHlwZSI6InRocm90dGxpbmcifSx7ImNpZHJzIjpbIjE1Mi41OC4xNDcuMTI4Il0sInR5cGUiOiJjbGllbnQifV19.HdIRP2WGj_1VcgZVdVuFxm_YrPphAyOa5c_-CALiQQpYycso7ThOeralTHZKj8dAqDi--OchxddwIBkx5zcxrQ';  // Replace with your actual API key
+            const encodedTag = encodeURIComponent(`#${clanTag}`); // Encode the tag
+
+            const url = `https://api.clashofclans.com/v1/clans/%23${encodedTag}`;
+
+            // Fetch the clan information from the API
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${apiKey}`,  // Include the API key in the request headers
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);  // Add this to log the API response for debugging
+                
+                if (data.error) {
+                    document.getElementById('clanInfo').textContent = `Error: ${data.error.message}`;
+                } else {
+                    // Check if the data is valid
+                    if (data.name) {
+                        document.getElementById('clanInfo').textContent = `
+                            Clan Name: ${data.name}
+                            Clan Tag: ${data.tag}
+                            Clan Level: ${data.clanLevel}
+                            Members: ${data.members}
+                            Type: ${data.type}
+                            Description: ${data.description}
+                            Location: ${data.location.name}
+                        `;
+                    } else {
+                        document.getElementById('clanInfo').textContent = 'Clan not found. Please check the tag and try again.';
+                    }
+                }
+            })
+            .catch(error => {
+                document.getElementById('clanInfo').textContent = `Error fetching clan info: ${error.message}`;
+            });
+        }
+    </script> 
+ </body>
+</html>
